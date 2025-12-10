@@ -1,0 +1,197 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap');
+
+:root{
+    --primary-1: #1E88E5;
+    --primary-2: #29B6F6;
+    --bg: #f5f7fb;
+    --text: #062c62;
+    --muted: #6b7b8a;
+    --card-bg: #ffffff;
+    --radius: 12px;
+}
+
+*{ box-sizing: border-box; }
+body{
+    margin:0;
+    font-family: "Poppins", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    font-family: "Poppins", sans-serif; /* <-- police appliquée ici */
+    color: #fff;
+    font-weight: 600;
+    border-radius: 0 0 20px 20px;
+    background: linear-gradient(-45deg, #062c62, #1E88E5, #29B6F6, #062c62);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.dashboard-header .logo {
+    font-family: 'Pacifico', cursive;
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.btn-logout {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    background-color: #fff;
+    color: #062c62;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: "Poppins", sans-serif; /* police Poppins pour le bouton */
+}
+
+.btn-logout:hover {
+    background-color: #29B6F6;
+    color: #fff;
+}
+
+/* Animation du gradient */
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Dashboard layout */
+.dashboard-container {
+    display: flex;
+    gap: 20px;
+    padding: 30px;
+}
+
+.dashboard-menu {
+    width: 220px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dashboard-menu button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    border: none;
+    background: #f5f6fa;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.dashboard-menu button i {
+    font-size: 18px;
+}
+
+.dashboard-menu button:hover {
+    background: linear-gradient(90deg, #4e73df, #062c62);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.dashboard-content { flex: 1; }
+
+/* Form Sections */
+.form-section {
+    background-color: var(--bg);
+    padding: 50px 20px;
+    display: none; /* masqué par défaut */
+}
+
+.form-section h2 { color: var(--primary-1); margin-bottom: 30px; text-align: center; }
+
+.form-section form {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.form-section input,
+.form-section select,
+.form-section textarea {
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: var(--radius);
+    font-size: 1rem;
+}
+
+.form-section button {
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius);
+    background-color: var(--primary-1);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.form-section button:hover { background-color: var(--primary-2); }
+
+textarea { resize: vertical; min-height: 100px; }
+
+/* Profil Docteur */
+
+
+/* Carte médecin 
+.doctor-card {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    background: linear-gradient(120deg, #f5f7fa, #c3cfe2);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    max-width: 700px;
+    margin: 0 auto 30px auto;
+}
+
+.doctor-card img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #4e73df;
+}
+
+.doctor-info h3 {
+    margin: 0 0 10px 0;
+    color: #062c62;
+}
+
+.doctor-info p {
+    margin: 4px 0;
+    color: #333;
+    font-weight: 500;
+}
+#doctorProfile .doctor-card {
+    background: linear-gradient(120deg, #e0f7fa, #b2ebf2);
+    border: 2px solid #4e73df;
+} */
