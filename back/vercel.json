@@ -1,12 +1,6 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "back/server.js", "use": "@vercel/node" },
-    { "src": "front/*", "use": "@vercel/static" }
-  ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "back/server.js" },
-    { "source": "/", "destination": "front/1.html" },
-    { "source": "/(.*)", "destination": "front/$1" }
+    { "source": "/", "destination": "/front/1.html" },
+    { "source": "/(.*)", "destination": "/front/$1" }
   ]
 }
