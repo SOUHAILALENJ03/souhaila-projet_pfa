@@ -80,7 +80,26 @@ tabBtns.forEach(btn => {
             if(f.id.toLowerCase().includes(tab)) f.classList.add("active");
         });
     });
+
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchBtn = document.getElementById('searchBtn');
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', (e) => {
+            // Empêche toute action par défaut (comme le rechargement de la page)
+            e.preventDefault();
+
+            // Affiche uniquement le message
+            alert("Veuillez vous connecter pour effectuer une recherche.");
+            
+            // Redirection optionnelle vers la page de connexion
+            // window.location.href = "login.html"; 
+        });
+    }
+});
+
 
 // -------------------- Ajouter Mot de Passe Oublié --------------------
 window.addEventListener('load', () => {
