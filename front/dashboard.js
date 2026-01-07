@@ -313,9 +313,18 @@ function downloadReceipt(appointmentId) {
     });
 }
 
+// --- Correction de la population de la liste des médecins pour les avis ---
 function populateReviewDoctors() {
     const reviewDoctorSelect = document.getElementById('reviewDoctor');
+    if (!reviewDoctorSelect) return;
+
     reviewDoctorSelect.innerHTML = '<option value="">Choisir un médecin</option>';
+    
+    if (doctors.length === 0) {
+        console.warn("Aucun médecin chargé pour les avis");
+        return;
+    }
+
     doctors.forEach(doc => {
         const option = document.createElement('option');
         option.value = doc._id;
@@ -324,4 +333,49 @@ function populateReviewDoctors() {
     });
 }
 
+// --- Correction de l'envoi d'Avis ---
+document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const doctorId = document.getElementById('reviewDoctor').value;
+    const rating = document.getElementById('reviewRating').value;
+    const comment = document.getElementById('reviewComment').value;
+
+    // Validation simple
+    if (!doctorId) {
+        alert("Veuillez sélectionner un médecin.");
+        return;
+    }
+
+    const data = {
+        doctorId: doctorId,
+        rating: parseInt(rating),
+        comment: comment
+    };
+
+    try {
+        const response = await fetch('http://localhost:3000/reviews', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': 'Bearer ' + token 
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert("Merci pour votre avis !");
+            document.getElementById('reviewForm').reset(); // Vide le formulaire
+            // Optionnel : recharger les avis si on regarde le profil du médecin actuel
+            loadRealReviews(doctorId);
+        } else {
+            alert("Erreur : " + (result.message || "Impossible d'envoyer l'avis"));
+        }
+    } catch (error) {
+        console.error("Erreur réseau lors de l'envoi de l'avis:", error);
+        alert("Erreur de connexion au serveur.");
+    }
+});
 

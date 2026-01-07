@@ -93,27 +93,49 @@
         </form>
     </div>
 </div>
-
-
-
-
-
-
-
-    
+  
 <!-- À propos -->
 <section class="about" id="about">
     <div class="about-container">
         <div class="about-text">
             <h2>À propos de MyDoctor</h2>
-            <p>MyDoctor vous aide à trouver rapidement le médecin adapté à vos besoins. Que ce soit pour une consultation générale, un suivi spécialisé ou des conseils santé, nous facilitons votre parcours médical.</p>
-            <a href="#" class="btn-learn">En savoir plus</a>
+            <p>MyDoctor vous aide à trouver rapidement le médecin adapté à vos besoins...</p>
+            
+            <a href="javascript:void(0)" class="btn-learn" id="openAboutModal">En savoir plus</a>
         </div>
-        <div class="about-image">
-            <img src="./asset/about-Doctor (4).png" alt="À propos de MyDoctor">
+        </div>
+</section>
+
+<div id="infoModal" class="modal">
+    <div class="modal-content animate-modal about-modal-wide">
+        <span class="close-info">&times;</span>
+        <div class="info-header">
+            <i class="fa-solid fa-circle-info fa-2x"></i>
+            <h2>À propos de MyDoctor</h2>
+        </div>
+        <div class="info-body">
+            <p><strong>MyDoctor</strong> est la plateforme leader au Maroc pour la gestion de la santé numérique.</p>
+            <div class="info-grid">
+                <div class="info-item">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h4>Rapidité</h4>
+                    <p>Prenez rendez-vous en moins de 2 minutes, 24h/24 et 7j/7.</p>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h4>Sécurité</h4>
+                    <p>Vos données de santé sont cryptées et totalement confidentielles.</p>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <h4>Proximité</h4>
+                    <p>Accédez à un large réseau de spécialistes dans toutes les villes du Royaume.</p>
+                </div>
+            </div>
+            <p class="info-footer-text">Notre mission est de simplifier l'accès aux soins pour tous les citoyens marocains en connectant patients et praticiens via une interface intuitive.</p>
         </div>
     </div>
-</section>
+</div>
 
 <!-- Services -->
 <section class="services" id="services">

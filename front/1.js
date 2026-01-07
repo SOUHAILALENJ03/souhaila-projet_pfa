@@ -174,8 +174,41 @@ window.addEventListener('load', () => {
 });
 
 
+
+// Logique pour la modale "En savoir plus"
+const infoModal = document.getElementById("infoModal");
+const openAboutBtn = document.getElementById("openAboutModal");
+const closeInfo = document.querySelector(".close-info");
+
+if(openAboutBtn) {
+    openAboutBtn.addEventListener("click", () => {
+        infoModal.style.display = "block";
+        // Petit délai pour laisser l'animation CSS se déclencher
+        setTimeout(() => infoModal.classList.add("show"), 10);
+    });
+}
+
+if(closeInfo) {
+    closeInfo.addEventListener("click", () => {
+        infoModal.classList.remove("show");
+        setTimeout(() => infoModal.style.display = "none", 300);
+    });
+}
+
+// On complète l'événement window.click existant ou on en ajoute un
+window.addEventListener("click", (e) => {
+    if (e.target == infoModal) {
+        infoModal.classList.remove("show");
+        setTimeout(() => infoModal.style.display = "none", 300);
+    }
+});
+
+
+
 if(res.role === 'doctor') {
     window.location.href = "doctor-dashboard.html";
 } else {
     window.location.href = "dashboard.html";
 }
+
+

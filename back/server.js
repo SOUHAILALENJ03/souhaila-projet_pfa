@@ -178,15 +178,24 @@ app.get('/doctor/appointments', authenticateToken, async (req, res) => {
 // --- GÉNÉRATION PDF ---
 
 const { generatePDF } = require('./pdfGenerator');
+// --- GÉNÉRATION PDF (Version Unique et Propre) ---
+const PDFDocument = require('pdfkit');
 
+// --- GÉNÉRATION PDF (Version Corrigée) ---
 app.get('/download-pdf/:appointmentId', authenticateToken, async (req, res) => {
     try {
+        // 1. On récupère le rendez-vous et le médecin
         const appointment = await Appointment.findById(req.params.appointmentId).populate('doctorId');
-        
-        // On récupère l'email depuis req.user (rempli par authenticateToken)
+        if (!appointment) return res.status(404).send("Rendez-vous introuvable");
+
+        // 2. IMPORTANT : On récupère l'email du patient dans la base de données via son ID
+        const patient = await Patient.findById(req.user._id);
+        if (!patient) return res.status(404).send("Patient introuvable");
+
+        // 3. On prépare les données avec l'email réel
         const pdfData = {
-            patientName: req.user.name,
-            patientEmail: req.user.email, // C'est ici qu'on prend l'email de l'inscription
+            patientName: patient.name,
+            patientEmail: patient.email, // <--- L'email sera maintenant correctement affiché
             doctorName: appointment.doctorId.name,
             doctorPhoto: appointment.doctorId.photo,
             specialty: appointment.doctorId.specialty,
@@ -198,9 +207,15 @@ app.get('/download-pdf/:appointmentId', authenticateToken, async (req, res) => {
         };
 
         const pdfBuffer = await generatePDF(pdfData);
-        res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdfBuffer.length });
+        
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Length': pdfBuffer.length,
+        });
         res.send(pdfBuffer);
+
     } catch (error) {
+        console.error("Erreur PDF:", error);
         res.status(500).send("Erreur serveur");
     }
 });
@@ -246,43 +261,44 @@ app.get('/admin/appointments', authenticateToken, async (req, res) => {
     res.json(appointments);
 });
 
-// --- GÉNÉRATION PDF (Version Unique et Propre) ---
-const PDFDocument = require('pdfkit');
 
-app.get('/download-pdf/:appointmentId', authenticateToken, async (req, res) => {
+
+// --- ROUTES POUR LES AVIS (REVIEWS) ---
+
+// 1. Envoyer un avis (POST)
+app.post('/reviews', authenticateToken, async (req, res) => {
     try {
-        const appointment = await Appointment.findById(req.params.appointmentId).populate('doctorId');
+        const { doctorId, rating, comment } = req.body;
         
-        if (!appointment) return res.status(404).send("Rendez-vous introuvable");
-
-        // ON PRÉPARE LES DONNÉES ICI
-        const pdfData = {
-            patientName: req.user.name || "Patient",
-            patientEmail: req.user.email, // <--- C'est ici que l'email d'inscription est récupéré
-            doctorName: appointment.doctorId.name,
-            doctorPhoto: appointment.doctorId.photo, // Vérifiez que c'est une URL complète
-            specialty: appointment.doctorId.specialty,
-            city: appointment.doctorId.city,
-            date: appointment.date,
-            time: appointment.time,
-            type: appointment.type,
-            price: appointment.doctorId.price
-        };
-
-        const pdfBuffer = await generatePDF(pdfData);
-        
-        res.set({
-            'Content-Type': 'application/pdf',
-            'Content-Length': pdfBuffer.length,
+        // Création du nouvel avis
+        const newReview = new Review({
+            patientId: req.user._id, // Récupéré du token
+            doctorId: doctorId,
+            rating: Number(rating),
+            comment: comment
         });
-        res.send(pdfBuffer);
 
-    } catch (error) {
-        console.error("Erreur PDF:", error);
-        res.status(500).send("Erreur serveur");
+        await newReview.save();
+        res.status(201).json({ status: 'success', message: 'Avis enregistré avec succès' });
+    } catch (err) {
+        console.error("Erreur lors de l'enregistrement de l'avis:", err);
+        res.status(500).json({ status: 'error', message: 'Erreur serveur lors de l\'envoi' });
     }
 });
 
+// 2. Récupérer les avis d'un médecin spécifique (GET)
+app.get('/reviews/:doctorId', async (req, res) => {
+    try {
+        const reviews = await Review.find({ doctorId: req.params.doctorId })
+            .sort({ date: -1 }); // Les plus récents en premier
+            
+        // Si vous voulez aussi le nom du patient, vous devrez peupler le patientId
+        // mais cela nécessite que ReviewSchema utilise une référence (ref: 'Patient')
+        res.json(reviews);
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur lors de la récupération des avis' });
+    }
+});
 
 app.listen(3000, () => console.log('Serveur MyDoctor démarré sur le port 3000'));
 
