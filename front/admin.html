@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>MyDoctor - Administration</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
+        .data-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        .data-table th { background: #1E88E5; color: white; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8em; }
+        .status-pending { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="logo">MyDoctor <small>PANNEAU ADMIN</small></div>
+        <button class="btn-logout" onclick="location.href='1.html'">Quitter</button>
+    </header>
+
+    <div class="admin-grid">
+        <div class="form-section">
+            <h2><i class="fa fa-users"></i> Patients Inscrits</h2>
+            <table class="data-table" id="patientsTable">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="form-section">
+            <h2><i class="fa fa-calendar"></i> Flux des Réservations</h2>
+            <table class="data-table" id="appsTable">
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Médecin</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function fetchAdminData() {
+            const token = localStorage.getItem('token');
+            // Récupérer les patients
+            const resP = await fetch('http://localhost:3000/admin/patients', {
+                headers: { 'Authorization': token }
+            });
+            const patients = await resP.json();
+            document.getElementById('patientsTable').querySelector('tbody').innerHTML = patients.map(p => `
+                <tr><td>${p.name}</td><td>${p.email}</td><td>${p.phone}</td></tr>
+            `).join('');
+
+            // Récupérer les rendez-vous
+            const resA = await fetch('http://localhost:3000/admin/appointments', {
+                headers: { 'Authorization': token }
+            });
+            const apps = await resA.json();
+            document.getElementById('appsTable').querySelector('tbody').innerHTML = apps.map(a => `
+                <tr><td>${a.patientId?.name}</td><td>${a.doctorId?.name}</td><td>${a.date}</td></tr>
+            `).join('');
+        }
+        fetchAdminData();
+    </script>
+</body>
+</html>

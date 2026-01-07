@@ -1,4 +1,3 @@
-// -------------------- MyDoctor Homepage JS --------------------
 console.log("MyDoctor homepage loaded!");
 
 // -------------------- Animation recherche --------------------
@@ -83,18 +82,33 @@ tabBtns.forEach(btn => {
     });
 });
 
+// -------------------- Ajouter Mot de Passe Oublié --------------------
+window.addEventListener('load', () => {
+    const loginForm = document.getElementById("loginForm");
+    
+    // Ajouter lien "Mot de passe oublié ?" au formulaire de connexion
+    const forgotLink = document.createElement('a');
+    forgotLink.href = 'forgot.html';  // Redirection vers la page séparée
+    forgotLink.textContent = 'Mot de passe oublié ?';
+    forgotLink.className = 'forgot-link';
+    forgotLink.style.display = 'block';
+    forgotLink.style.marginTop = '10px';
+    forgotLink.style.fontSize = '14px';
+    forgotLink.style.color = '#1E88E5';
+    forgotLink.style.textDecoration = 'none';
+    loginForm.appendChild(forgotLink);
+});
+
 // -------------------- Inscription sécurisée --------------------
 document.getElementById("signupForm").addEventListener("submit", (e) => {
     e.preventDefault();
-
     const data = {
         name: e.target.querySelector('input[placeholder="Nom complet"]').value,
         email: e.target.querySelector('input[placeholder="Email"]').value,
         phone: e.target.querySelector('input[placeholder="Téléphone"]').value,
         password: e.target.querySelector('input[placeholder="Mot de passe"]').value
     };
-
-    fetch("signup.php", {
+    fetch("http://localhost:3000/signup", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
@@ -113,33 +127,37 @@ document.getElementById("signupForm").addEventListener("submit", (e) => {
 // -------------------- Connexion sécurisée --------------------
 document.getElementById("loginForm").addEventListener("submit", (e) => {
     e.preventDefault();
-
     const data = {
         email: e.target.querySelector('input[placeholder="Email"]').value,
         password: e.target.querySelector('input[placeholder="Mot de passe"]').value
     };
-
-    fetch("login.php", {
+    fetch("http://localhost:3000/login", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
     })
     .then(res => res.json())
     .then(res => {
-        alert(res.message);
-        if(res.status === "success"){
-            authModal.style.display = "none";
-            authModal.classList.remove("show");
+    if(res.status === "success") {
+        // 1. Stockage des informations
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('userName', res.name);
+        localStorage.setItem('userRole', res.role); // Très important pour la suite
 
-            // Afficher nom utilisateur dans le bouton
-            const openAuthBtn = document.getElementById("openAuth");
-            openAuthBtn.textContent = "Bonjour, " + (res.name || data.email);
-            openAuthBtn.disabled = true;
+        alert("Bienvenue " + res.name);
 
-            // Redirection possible après login
-            // window.location.href = "dashboard.html";
+        // 2. Redirection automatique selon le rôle
+        if(res.role === 'doctor') {
+            window.location.href = "doctor-dashboard.html";
+        } else if(res.role === 'admin') {
+            window.location.href = "admin.html";
+        } else {
+            window.location.href = "dashboard.html"; // Pour les patients
         }
-    })
+    } else {
+        alert("Erreur : " + res.message);
+    }
+})
     .catch(err => console.error(err));
 });
 
@@ -155,50 +173,9 @@ window.addEventListener('load', () => {
     });
 });
 
-// Connexion
-const loginForm = document.getElementById('loginForm');
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = loginForm.querySelector('input[type="email"]').value;
-    const patient = { email }; // tu peux ajouter nom, téléphone, etc.
-    localStorage.setItem('patient', JSON.stringify(patient));
-    window.location.href = "dashboard.html"; // redirection vers dashboard
-});
 
-// Inscription
-const signupForm = document.getElementById('signupForm');
-signupForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = signupForm.querySelector('input[type="text"]').value;
-    const email = signupForm.querySelector('input[type="email"]').value;
-    const phone = signupForm.querySelector('input[type="tel"]').value;
-    const password = signupForm.querySelector('input[type="password"]').value;
-
-    // Stockage simulé côté front-end (localStorage)
-    const patient = {
-        name: name,
-        email: email,
-        phone: phone,
-        password: password // attention : jamais stocker mot de passe en clair en vrai projet
-    };
-    localStorage.setItem('patient', JSON.stringify(patient));
-
-    // Redirection vers dashboard
+if(res.role === 'doctor') {
+    window.location.href = "doctor-dashboard.html";
+} else {
     window.location.href = "dashboard.html";
-});
-
-
-
-
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const patient = { email }; // ici tu peux stocker plus d’infos
-    localStorage.setItem('patient', JSON.stringify(patient));
-    window.location.href = "dashboard.html"; // redirection vers dashboard
-});
-
-
-
-//-------------------------------------------------------------
-
+}

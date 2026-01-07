@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyDoctor - Mot de Passe Oublié</title>
+    <link rel="stylesheet" href="1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--bg);">
+        <div class="modal-content" style="display: block; margin: 0; max-width: 400px;">
+            <h3>Mot de Passe Oublié</h3>
+            <p>Entrez votre email pour recevoir un lien de reset.</p>
+            <form id="forgotForm">
+                <input type="email" placeholder="Email" required>
+                <button type="submit">Envoyer lien de reset</button>
+            </form>
+            <a href="1.html" style="display:block; margin-top:10px; font-size:14px; color:#1E88E5; text-decoration:none;">Retour à la connexion</a>
+        </div>
+    </div>
+
+    <script>
+        // Soumettre mot de passe oublié
+        document.getElementById("forgotForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = e.target.querySelector('input[placeholder="Email"]').value;
+            fetch("http://localhost:3000/forgot-password", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ email })
+            })
+            .then(res => res.json())
+            .then(res => {
+                alert(res.message);
+                // Redirection vers connexion après
+                window.location.href = "1.html";
+            })
+            .catch(err => console.error(err));
+        });
+    </script>
+</body>
+</html>

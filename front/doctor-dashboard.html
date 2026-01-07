@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>MyDoctor - Tableau de Bord Praticien</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<header class="dashboard-header">
+    <div class="logo">MyDoctor <small>(Espace Professionnel)</small></div>
+    <div class="user-info">
+        <span id="docName">Chargement...</span>
+        <button class="btn-logout" onclick="logout()">Déconnexion</button>
+    </div>
+</header>
+
+<div class="dashboard-container">
+    <div class="dashboard-menu">
+        <button onclick="loadAppointments()"><i class="fa fa-calendar-check"></i> Mes Rendez-vous</button>
+        <button onclick="showProfile()"><i class="fa fa-user-md"></i> Mon Profil Pro</button>
+    </div>
+
+    <div class="dashboard-content">
+        <h2>Mes prochains rendez-vous</h2>
+        <div id="appointmentsList" class="appointments-grid">
+            </div>
+    </div>
+</div>
+
+<script>
+    // Sécurité : vérifier si c'est bien un médecin
+    if(localStorage.getItem('userRole') !== 'doctor') {
+        window.location.href = "1.html";
+    }
+
+    document.getElementById('docName').textContent = "Dr. " + localStorage.getItem('userName');
+
+    async function loadAppointments() {
+        const token = localStorage.getItem('token');
+        const res = await fetch('http://localhost:3000/doctor/appointments', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        
+        const list = document.getElementById('appointmentsList');
+        if(data.length === 0) {
+            list.innerHTML = "<p>Aucun rendez-vous prévu.</p>";
+            return;
+        }
+
+        list.innerHTML = data.map(app => `
+            <div class="appointment-card" style="background:white; padding:15px; border-radius:10px; margin-bottom:10px; border-left: 5px solid #1E88E5;">
+                <h4>Patient : ${app.patientId.name}</h4>
+                <p><strong>Date :</strong> ${new Date(app.date).toLocaleDateString()} à ${app.time}</p>
+                <p><strong>Type :</strong> ${app.type || 'Présentiel'}</p>
+                <p><strong>Contact :</strong> ${app.patientId.phone}</p>
+                <button onclick="cancelApp('${app._id}')" style="background:#ff4444; color:white; border:none; padding:5px; border-radius:5px;">Annuler</button>
+            </div>
+        `).join('');
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "1.html";
+    }
+
+    loadAppointments(); // Charger au démarrage
+</script>
+</body>
+</html>

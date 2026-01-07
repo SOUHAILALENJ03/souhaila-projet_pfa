@@ -625,4 +625,20 @@ footer .footer-copy {
     }
 }
 
+/* -------------------- Liens Ajoutés Dynamiquement -------------------- */
+.forgot-link {
+    transition: color 0.3s;
+}
+.forgot-link:hover {
+    color: #29B6F6;
+    text-decoration: underline;
+}
+
+#forgotForm {
+    display: none;
+}
+#forgotForm.active {
+    display: flex;
+}
+
 
