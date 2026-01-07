@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyDoctor - Connexion Médecin</title>
+    <link rel="stylesheet" href="1.css"> <!-- Utilisez votre CSS existant -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <section class="section1">
+        <header class="site-header">
+            <div class="logo">MyDoctor</div>
+            <nav class="navbar">
+                <a href="1.html" class="nav-item">Accueil</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="hero-text">
+                <h1>Connexion Médecin</h1>
+                <p>Accédez à votre dashboard professionnel.</p>
+
+                <form id="doctorLoginForm" class="auth-form">
+                    <input type="email" id="doctorEmail" placeholder="Email" required>
+                    <input type="password" id="doctorPassword" placeholder="Mot de passe" required>
+                    <button type="submit">Se connecter</button>
+                </form>
+
+                <p>Pas encore inscrit ? <a href="doctor-signup.html">Inscrivez-vous ici</a></p>
+            </div>
+        </section>
+    </section>
+
+    <script src="doctor-login.js"></script> <!-- Script séparé pour la logique -->
+</body>
+</html>

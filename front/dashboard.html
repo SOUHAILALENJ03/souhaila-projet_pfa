@@ -6,27 +6,23 @@
     <title>MyDoctor - Dashboard</title>
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDn5ncWX0yVHX2DFnOvCQv-OVu2wIintBs&libraries=geometry&callback=initMap"></script>
 </head>
 <body>
-
 <header class="dashboard-header">
     <div class="logo">MyDoctor</div>
     <button class="btn-logout" id="logoutBtn">Déconnexion</button>
 </header>
 
 <div class="dashboard-container">
-    <!-- Menu latéral -->
     <div class="dashboard-menu">
         <button onclick="showSection('profile')"><i class="fa fa-user"></i> Mon Profil</button>
         <button onclick="showSection('appointment')"><i class="fa fa-calendar"></i> Rendez-vous</button>
-        <!-- PROFIL DOCTEUR -->
         <button onclick="showSection('doctorProfile')"><i class="fa fa-user-md"></i> Profil du médecin</button>
         <button onclick="showSection('reviews')"><i class="fa fa-star"></i> Avis</button>
     </div>
 
-    <!-- Contenu -->
     <div class="dashboard-content">
-        <!-- PROFIL -->
         <section id="profile" class="form-section">
             <h2>Mon Profil</h2>
             <form id="profileForm">
@@ -39,52 +35,76 @@
             </form>
         </section>
 
-        <!-- RENDEZ-VOUS -->
         <section id="appointment" class="form-section">
             <h2>Prendre rendez-vous</h2>
             <form id="appointmentForm">
-                <label>Médecin</label>
-                <select id="appointmentDoctor">
-                    <!-- Options remplies dynamiquement par loadDoctors() -->
+                <label>Spécialité</label>
+                <select id="appointmentSpecialty" required>
+                    <option value="">Choisir une spécialité</option>
                 </select>
 
+                <label>Médecin</label>
+                <select id="appointmentDoctor" required>
+                    <option value="">Choisir un médecin</option>
+                </select>
+
+                <div id="selectedDoctorDetails" style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px; display: none;">
+                    <h4>Détails du Médecin Sélectionné</h4>
+                    <p><strong>Nom :</strong> <span id="selectedName"></span></p>
+                    <p><strong>Spécialité :</strong> <span id="selectedSpecialty"></span></p>
+                    <p><strong>Ville :</strong> <span id="selectedCity"></span></p>
+                    <p><strong>Prix :</strong> <span id="selectedPrice"></span> MAD</p>
+                    <p><strong>CV :</strong> <span id="selectedCV"></span></p>
+                    <p><strong>Disponibilités :</strong> <span id="selectedAvailability"></span></p>
+                </div>
+
+                <label>Ville</label>
+                <select id="appointmentCity" required>
+                    <option value="">Choisir une ville</option>
+                </select>
+
+                <label>Prix</label>
+                <input type="text" id="appointmentPrice" readonly placeholder="Prix affiché ici">
+
                 <label>Date</label>
-                <input type="date" id="appointmentDate">
+                <input type="date" id="appointmentDate" required>
 
                 <label>Heure</label>
-                <input type="time" id="appointmentTime">
+                <input type="time" id="appointmentTime" required>
 
                 <label>Type de consultation</label>
                 <select id="appointmentType">
-                    <option value="presentielle">Présentielle</option>
-                    <option value="visio">En ligne (visio)</option>
+                    <option value="Présentiel">Présentiel</option>
+                    <option value="Visio">Visio (Vidéo)</option>
                 </select>
 
                 <button type="submit">Réserver</button>
             </form>
+            <button id="downloadPdfBtn" style="display: none; margin-top: 20px; padding: 15px 30px; background: #1E88E5; color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 600; box-shadow: 0 4px 10px rgba(30, 136, 229, 0.3);">
+                📄 Télécharger le Récapitulatif PDF
+            </button>
         </section>
 
-
-        <!-- PROFIL DOCTEUR -->
         <section id="doctorProfile" class="form-section">
             <h2>Profil du médecin</h2>
-            <form>
+            <div id="doctorDetails" style="display: none;">
                 <div class="doctor-card">
-                    <img id="doctorPhoto" src="" alt="Photo du médecin">
+                    <img id="doctorPhoto" src="" alt="Photo du médecin" style="width: 180px; height: 180px; border-radius: 50%; object-fit: cover; border: 4px solid #1E88E5; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                     <div class="doctor-info">
                         <h3 id="doctorName"></h3>
-                        <p id="doctorSpecialty"></p>
-                        <p id="doctorCity"></p>
-                        <p id="doctorCV"></p>
+                        <p><strong>Spécialité :</strong> <span id="doctorSpecialty"></span></p>
+                        <p><strong>Ville :</strong> <span id="doctorCity"></span></p>
+                        <p><strong>Prix :</strong> <span id="doctorPrice"></span> MAD</p>
+                        <p><strong>CV :</strong> <span id="doctorCV"></span></p>
+                        <p><strong>Expériences :</strong> <span id="doctorExperience"></span></p>
+                        <p><strong>Disponibilités :</strong> <span id="doctorAvailability"></span></p>
+                        <div id="doctorMap" style="width: 100%; height: 300px; margin-top: 20px;"></div>
                     </div>
                 </div>
-            </form>
+            </div>
+            <p id="noDoctorSelected">Sélectionnez un médecin dans "Rendez-vous" pour voir son profil.</p>
         </section>
 
-
-
-        
-        <!-- AVIS -->
         <section id="reviews" class="form-section">
             <h2>Laisser un avis</h2>
             <form id="reviewForm">

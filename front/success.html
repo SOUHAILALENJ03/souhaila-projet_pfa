@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation - MyDoctor</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+        .success-card {
+            text-align: center;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .icon-check { font-size: 60px; color: #4CAF50; margin-bottom: 20px; }
+        .btn-home { display: inline-block; margin-top: 20px; padding: 12px 25px; background: #1E88E5; color: white; text-decoration: none; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="success-card">
+        <div class="icon-check">✔</div>
+        <h1 id="successTitle">Action réussie !</h1>
+        <p id="successMessage">Votre demande a été traitée avec succès.</p>
+        
+        <div id="actionArea">
+            </div>
+
+        <a href="dashboard.html" class="btn-home">Retour au Dashboard</a>
+    </div>
+
+    <script>
+        // Récupérer les infos passées dans l'URL (ID du RDV par exemple)
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get('type');
+        const id = params.get('id');
+
+        if(type === 'appointment') {
+            document.getElementById('successTitle').innerText = "Rendez-vous Confirmé !";
+            document.getElementById('successMessage').innerText = "Votre créneau a été réservé. Vous pouvez télécharger votre reçu ci-dessous.";
+            
+            // Ajouter le bouton de téléchargement PDF
+            document.getElementById('actionArea').innerHTML = `
+                <button onclick="downloadPDF('${id}')" class="btn-home" style="background:#f39c12; border:none; cursor:pointer;">
+                    📥 Télécharger mon PDF
+                </button>
+            `;
+        }
+
+        function downloadPDF(apptId) {
+            window.open(`http://localhost:3000/download-pdf/${apptId}?token=${localStorage.getItem('token')}`, '_blank');
+        }
+    </script>
+</body>
+</html>
